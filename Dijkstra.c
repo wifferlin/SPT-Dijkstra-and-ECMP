@@ -20,18 +20,18 @@ int main(int argc, char *argv[])
     //printf("%d %d %d\n",Num_of_Node,Num_of_Link,Num_of_EndNode);
 
 
-    //Initial the Link Matrix of Node(ALL Link are 0 First)
+    //Initial the Link Matrix of Node(ALL Link are Infinity First, means no connect)
     int LinkMatrix[Num_of_Node][Num_of_Node];
     for(count1 = 0; count1 < Num_of_Node; count1++)
     {
         for(count2 = 0;count2 < Num_of_Node;count2++)
         {
-            LinkMatrix[count1][count2]=0;
+            LinkMatrix[count1][count2]=Infinity;
         }
     }
 
 
-    //Fill in the Link State on cnstln36
+    //Fill in the Link State and weight on cnstln36(in this case all Link weight are 1)
     while(fscanf(file,"%d %d %d",&Node1,&Node2,&ignore) != EOF)
     {
         LinkMatrix[Node1][Node2]=1;
@@ -60,17 +60,26 @@ int main(int argc, char *argv[])
 void Dijkstra(int Source , int Destination,int Num_of_Node, int LinkMatrix[Num_of_Node][Num_of_Node])
 {
     int Distance[Num_of_Node];
+    int Previous[Num_of_Node];
+    int Visited[Num_of_Node];
     int count;
+    //initial the distance and shorted path from source
     for(count = 0;count < Num_of_Node;count++)
     {
+        //set the distance of source neighbor as 1, others as infinity
         if(LinkMatrix[Source][count] == 1)
         {
-            if(count == Source)
-            {
-                Distance[count] = 0;
-            }
             Distance[count] = 1;
         }
-        Distance[count] = Infinity;
+        else
+        {
+            Distance[count] = Infinity;
+        }
+        //set Source to Source as 0
+        if(Source == count)
+        {
+            Distance[count] = 0;
+        }
     }
+    //
 }
