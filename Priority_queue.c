@@ -43,7 +43,9 @@ void Insert(PQNode NewNode,PQNode* MinHeap,int size)
     //先把新節點放到樹的最下方
     MinHeap[index] = NewNode;
     //跟 parent 做比較，若比母節點大則上移
-    while(MinHeap[index].Distance < MinHeap[index/2].Distance && index > 1)
+    //此處加等號，可以讓等距離的點後加入優先(也就是 Dijkstra 選出來的路是編號較高的路)，但會消耗比較多資源在交換位置
+    //若不加等號可消耗比較少資源，但路徑選擇較難預測
+    while(MinHeap[index].Distance <= MinHeap[index/2].Distance && index > 1)
     {
         //母節點與子節點換位
         Tmp = MinHeap[index/2];
@@ -86,6 +88,7 @@ int RemoveMin(PQNode* MinHeap,int size)
     return RemoveNode.Node_Num;
 }
 
+//此處相同優先度節點原則為遇到相等的即往左下(2i)處節點交換
 void MinHeapify(PQNode* MinHeap,int size,int index)
 {
     PQNode Tmp;
@@ -99,7 +102,7 @@ void MinHeapify(PQNode* MinHeap,int size,int index)
         //當只有一個 child 時，只跟他進行比較，不符合規則交換，符合規則跳出
         else if(2*index == size)
         {
-            if(MinHeap[2*index].Distance < MinHeap[index].Distance)
+            if(MinHeap[2*index].Distance <= MinHeap[index].Distance)
             {
                 Tmp = MinHeap[index];
                 MinHeap[index] = MinHeap[2*index];

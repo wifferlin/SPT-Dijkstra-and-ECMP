@@ -97,23 +97,32 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
     {
         //If Queue is Empty Break the loop
         RemoveNode = Dequeue(&Q);
+        ////printf("Remove : %d\n",RemoveNode);
         if(RemoveNode == Empty)
         {
             break;
         }
+        //Record this Node as Visited
         Visited[RemoveNode] = 1;
 
         for(count=0 ;count<Num_of_Node; count++)
         {
+            //Find the Node Neighbor
             if(LinkMatrix[RemoveNode][count] != Infinity)
             {
+                //Sum the Length From Source to RemoveNode Already Know Shortest Distance
+                //And RemoveNode to Neighbor length
                 Tmp = Distance[RemoveNode] + LinkMatrix[RemoveNode][count];
+                ////printf("count : %d ,Distance[RemoveNode] : %d , LinkMatrix[RemoveNode][count] : %d \n",count,Distance[RemoveNode],LinkMatrix[RemoveNode][count]);
+                ////printf("TMP : %d , Distance[count] = %d\n",Tmp,Distance[count]);
                 if(Tmp < Distance[count])
                 {
                     Distance[count] = Tmp;
                     Previous[count] = RemoveNode;
+                    //If Not Visited,Add into the Priority Queue
                     if(Visited[count] == 0)
                     {
+                        ////printf("ADD : %d , Distance = %d\n",count,Distance[count]);
                         NewNode.Node_Num = count;
                         NewNode.Distance = Distance[count];
                         Enqueue(NewNode,&Q);
@@ -122,7 +131,7 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
             }
         }
     }
-
+    //Print The Result
     count = Destination;
     printf("The Path : %d",Destination);
     while(Previous[count] != Empty)
