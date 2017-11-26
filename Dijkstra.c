@@ -1,7 +1,9 @@
 #include<stdio.h>
 #include<string.h>
+#include "Priority_queue.c"
 
-#define Infinity 999
+#define Infinity 9999
+#define Empty 999
 
 int main(int argc, char *argv[])
 {
@@ -9,7 +11,8 @@ int main(int argc, char *argv[])
     int count1 = 0 , count2 = 0;
     int Node1 = 0 , Node2 = 0; 
     int ignore;
-    int Source , Destination; 
+    int Source , Destination;
+    int STP[Num_of_Node];
     //open the topology file
     FILE *file;
     file = fopen("cnstln36.txt","r");
@@ -54,32 +57,81 @@ int main(int argc, char *argv[])
     scanf("%d",&Source);
     printf("\nPlease key in the Destination Node:");
     scanf("%d",&Destination);
-    Dijkstra(Source,Destination,Num_of_Node,LinkMatrix[Num_of_Node][Num_of_Node]);
+    Dijkstra(Source,Destination,Num_of_Node,LinkMatrix);
 }
 
-void Dijkstra(int Source , int Destination,int Num_of_Node, int LinkMatrix[Num_of_Node][Num_of_Node])
+void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num_of_Node][Num_of_Node])
 {
     int Distance[Num_of_Node];
     int Previous[Num_of_Node];
-    int Visited[Num_of_Node];
+    int Visited[Num_of_Node];   //Aleardy Visisited Node(0 is unvisited, 1 is visited)
     int count;
+    PQ Q;                // Priority Queue
+    PQNode NewNode;      //Priority Queue Node
+    int RemoveNode;      //pop Node from Priority Queue
+    int Tmp;
+
+
     //initial the distance and shorted path from source
-    for(count = 0;count < Num_of_Node;count++)
+    for(count = 0;count < Num_of_Node; count++)
     {
-        //set the distance of source neighbor as 1, others as infinity
-        if(LinkMatrix[Source][count] == 1)
-        {
-            Distance[count] = 1;
-        }
-        else
-        {
-            Distance[count] = Infinity;
-        }
+        //set the all distance from source as infinity
+        Distance[count] = Infinity;
+
         //set Source to Source as 0
         if(Source == count)
         {
             Distance[count] = 0;
         }
+        Previous[count] = Empty;
+        Visited[count] = 0;
     }
-    //
+
+    //Insert Source int Priority queue(use the file of Priority_queue.c)
+    InitialPQ(&Q);
+    NewNode.Node_Num = Source;
+    NewNode.Distance = Distance[Source];
+    Enqueue(NewNode,&Q);
+
+    while(1)
+    {
+        //If Queue is Empty Break the loop
+        RemoveNode = Dequeue(&Q);
+        if(RemoveNode == Empty)
+        {
+            break;
+        }
+        Visited[RemoveNode] = 1;
+
+        for(count=0 ;count<Num_of_Node; count++)
+        {
+            if(LinkMatrix[RemoveNode][count] != Infinity)
+            {
+                Tmp = Distance[RemoveNode] + LinkMatrix[RemoveNode][count];
+                if(Tmp < Distance[count])
+                {
+                    Distance[count] = Tmp;
+                    Previous[count] = RemoveNode;
+                    if(Visited[count] == 0)
+                    {
+                        NewNode.Node_Num = count;
+                        NewNode.Distance = Distance[count];
+                        Enqueue(NewNode,&Q);
+                    }
+                }
+            }
+        }
+    }
+
+    count = Destination;
+    printf("The Path : %d",Destination);
+    while(Previous[count] != Empty)
+    {
+        printf(" <- %d",Previous[count]);
+        count = Previous[count];
+    }
+    printf("\n");
+    printf("The Distance = %d",Distance[Destination]);
+    printf("\n");
 }
+

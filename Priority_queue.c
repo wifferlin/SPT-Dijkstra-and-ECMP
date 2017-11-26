@@ -4,18 +4,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define Empty 999 
+
+//定義節點內容
 typedef struct PQNode 
 {
     int Node_Num;
     int Distance;
 } PQNode;
 
+//定義 Heap 內容
 typedef struct Priority_Queue
 {    
     int size;
     PQNode* MinHeap;
 } PQ;
 
+//初始化 MinHeap
 void InitialPQ(PQ* Q)
 {
     Q->size = 0;
@@ -44,27 +49,40 @@ void Insert(PQNode NewNode,PQNode* MinHeap,int size)
         Tmp = MinHeap[index/2];
         MinHeap[index/2] = MinHeap[index];
         MinHeap[index] = Tmp;
-        //繼續向上檢查
+        //繼續向上檢查直到 ROOT
         index = index/2;
     }
 }
 
 int Dequeue(PQ *Q)
 {
-    int RemoveNode_Num = RemoveMin(Q->MinHeap,Q->size);
-    Q->size = Q->size -1;
-    printf("%d\n",RemoveNode_Num);
-    return RemoveNode_Num;
+    if(Q->size != 0)
+    {
+        //移出最小節點(也就是根節點)
+        int RemoveNode_Num = RemoveMin(Q->MinHeap,Q->size);
+        //Queue size 增加
+        Q->size = Q->size -1;
+        //回傳節點號碼
+        return RemoveNode_Num;
+    }
+    else
+    {
+        return Empty;
+    }
+    
 }
 
 int RemoveMin(PQNode* MinHeap,int size)
 {
     //Root 節點即為最小，故取 Root
     PQNode RemoveNode = MinHeap[1];
-    //將最尾端
+    //將最尾端節點移至 Root 並開始調整
     MinHeap[1] = MinHeap[size];
+    //因移出Root 節點所以 size 減 1
     size = size - 1;
+    //調整 MinHeap 的順序
     MinHeapify(MinHeap,size,1);
+    //回傳節點號碼
     return RemoveNode.Node_Num;
 }
 
@@ -73,13 +91,15 @@ void MinHeapify(PQNode* MinHeap,int size,int index)
     PQNode Tmp;
     while(1)
     {
+        //當沒有任何 child 時，調整結束
         if(2*index > size)
         {
             break;
         }
+        //當只有一個 child 時，只跟他進行比較，不符合規則交換，符合規則跳出
         else if(2*index == size)
         {
-            if(MinHeap[2*index].Distance > MinHeap[index].Distance)
+            if(MinHeap[2*index].Distance < MinHeap[index].Distance)
             {
                 Tmp = MinHeap[index];
                 MinHeap[index] = MinHeap[2*index];
@@ -91,6 +111,7 @@ void MinHeapify(PQNode* MinHeap,int size,int index)
                 break;
             }
         }
+        //跟所有 child 比較，跟比較小的交換
         else
         {
             //左邊小跟左邊換，右邊小跟右邊換
@@ -111,36 +132,4 @@ void MinHeapify(PQNode* MinHeap,int size,int index)
         }
     }
     
-}
-
-int main()
-{
-    PQ Q;
-    PQNode NewNode;
-    int RemoveNode_Num;
-    InitialPQ(&Q);
-    NewNode.Node_Num = 0;
-    NewNode.Distance = 1;
-    Enqueue(NewNode,&Q);
-    NewNode.Node_Num = 1;
-    NewNode.Distance = 9;
-    Enqueue(NewNode,&Q);
-    NewNode.Node_Num = 2;
-    NewNode.Distance = 1;
-    Enqueue(NewNode,&Q);
-    NewNode.Node_Num = 3;
-    NewNode.Distance = 1;
-    Enqueue(NewNode,&Q);
-    NewNode.Node_Num = 4;
-    NewNode.Distance = 9;
-    Enqueue(NewNode,&Q);
-    NewNode.Node_Num = 5;
-    NewNode.Distance = 1;
-    Enqueue(NewNode,&Q);
-    RemoveNode_Num = Dequeue(&Q);
-    RemoveNode_Num = Dequeue(&Q);
-    RemoveNode_Num = Dequeue(&Q);
-    RemoveNode_Num = Dequeue(&Q);
-    RemoveNode_Num = Dequeue(&Q);
-    RemoveNode_Num = Dequeue(&Q);
 }
