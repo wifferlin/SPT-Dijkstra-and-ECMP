@@ -122,7 +122,10 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
         }
     }
     //Print The Result
-    count = Destination;
+    char SPF[]="";
+    GetPath(Num_of_Node,Source,Destination,Previous,SPF);
+    
+    /* count = Destination;
     printf("The Path : %d",Destination);
     while(Previous[count] != Empty)
     {
@@ -131,6 +134,28 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
     }
     printf("\n");
     printf("The Distance = %d",Distance[Destination]);
-    printf("\n");
+    printf("\n"); */
+}
+
+void GetPath(int Num_of_Node,int Source,int Destination,int Previous[Num_of_Node],char SPF[])
+{
+    int Node;
+    char str[10];
+    if(Source == Destination)
+    {
+        sprintf(str,"%d",Source);
+        strcat(str,SPF);
+        SPF = str;
+        printf("%s\n",SPF);
+    }
+    else
+    {
+        sprintf(str,"->%d",Destination);  //formate the int as string
+        strcat(str,SPF);                 //Put the Shortest Path back on str and save as str
+        SPF = str;
+        Node = Previous[Destination];
+        GetPath(Num_of_Node,Source,Node,Previous,SPF);
+    }
+
 }
 
