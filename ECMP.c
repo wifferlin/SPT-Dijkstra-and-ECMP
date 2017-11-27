@@ -5,6 +5,9 @@
 #define Infinity 9999
 #define Empty 999
 
+int Previous[36][36]; //Record the Shorted Path Previous Node
+
+
 int main(int argc, char *argv[])
 {
     int Num_of_Node = 0 , Num_of_EndNode = 0 , Num_of_Link = 0;
@@ -47,20 +50,18 @@ int main(int argc, char *argv[])
     scanf("%d",&Source);
     printf("\nPlease key in the Destination Node:");
     scanf("%d",&Destination);
-    Dijkstra(Source,Destination,Num_of_Node,LinkMatrix);
+    Multi_Path_Dijkstra(Source,Destination,Num_of_Node,LinkMatrix);
 }
 
-void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num_of_Node][Num_of_Node])
+void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num_of_Node][Num_of_Node])
 {
-    int Distance[Num_of_Node];  //Record the Shorted Path from source
-    int Previous[Num_of_Node];  //Record the Shorted Path Previous Node
-    int Visited[Num_of_Node];   //Aleardy Visisited Node(0 is unvisited, 1 is visited)
-    int count;
-    PQ Q;                       // Priority Queue
-    PQNode NewNode;             //Priority Queue Node
-    int RemoveNode;             //pop Node from Priority Queue
+    int Distance[Num_of_Node];              //Record the Shorted Path from source
+    int Visited[Num_of_Node];               //Aleardy Visisited Node(0 is unvisited, 1 is visited)
+    int Pathcount,count;
+    PQ Q;                                   // Priority Queue
+    PQNode NewNode;                         //Priority Queue Node
+    int RemoveNode;                         //pop Node from Priority Queue
     int Tmp;
-
 
     //initial the distance and shorted path from source
     for(count = 0;count < Num_of_Node; count++)
@@ -73,10 +74,13 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
         {
             Distance[count] = 0;
         }
-        Previous[count] = Empty;
+        // Initial the All Path
+        for(Pathcount = 0;Pathcount < Num_of_Node; Pathcount++)
+        {
+            Previous[Pathcount][count] = Empty;
+        }
         Visited[count] = 0;
     }
-
     //Insert Source int Priority queue(use the file of Priority_queue.c)
     InitialPQ(&Q);
     NewNode.Node_Num = Source;
@@ -108,7 +112,11 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
                 if(Tmp < Distance[count])
                 {
                     Distance[count] = Tmp;
-                    Previous[count] = RemoveNode;
+                    //Reset the Shorted Path
+                    ResetPrevious(Num_of_Node,count);
+                    //Add the Previous into Previous table(new shorted Distance)
+                    AddPrevious(Num_of_Node,count,RemoveNode);
+
                     //If Not Visited,Add into the Priority Queue
                     if(Visited[count] == 0)
                     {
@@ -118,19 +126,76 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
                         Enqueue(NewNode,&Q);
                     }
                 }
+                if(Tmp == Distance[count])
+                {
+                    //Add the Previous into Previous table(same Distance means multipath)
+                    AddPrevious(Num_of_Node,count,RemoveNode);
+                }
             }
         }
     }
+    
     //Print The Result
-    count = Destination;
-    printf("The Path : %d",Destination);
-    while(Previous[count] != Empty)
+    char ECMP[]="";
+    //Use the Depth-First Search and Recursive find the all path form Previous table and print
+    GetPath(Num_of_Node, Source,Destination,ECMP);
+}
+
+
+void ResetPrevious(int Num_of_Node,int Node)
+{
+    int Pathcount;
+    //Clear all old Distance Previous
+    for(Pathcount = 0 ; Pathcount < Num_of_Node; Pathcount++)
     {
-        printf(" <- %d",Previous[count]);
-        count = Previous[count];
+        Previous[Pathcount][Node] = Empty;
     }
-    printf("\n");
-    printf("The Distance = %d",Distance[Destination]);
-    printf("\n");
+}
+
+void AddPrevious(int Num_of_Node , int Node,int RemoveNode)
+{
+    int Pathcount = 0;
+    //find the empty box and save the new previous
+    while(Previous[Pathcount][Node] != Empty)
+    {
+        // If find the smae Previous don't save again
+        if(Previous[Pathcount][Node] == RemoveNode)
+        {
+            break;
+        }
+        Pathcount++;
+    }
+    Previous[Pathcount][Node] = RemoveNode;
+}
+
+void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
+{
+    int Pathcount = 0;
+    int Node;
+    char str[10];
+    //If meet source means print the path
+    if(Source == Destination)
+    {
+        sprintf(str,"%d",Source);
+        strcat(str,ECMP);
+        ECMP = str;
+        printf("%s\n",ECMP);
+    }
+    else
+    {   
+        while(Previous[Pathcount][Destination] != Empty)
+        {
+            if(Pathcount == 0)
+            {
+                sprintf(str,"->%d",Destination);  //formate the int as string
+                strcat(str,ECMP);                 //Put the ECMP back on str and save as str
+                ECMP = str;
+            }
+            Node = Previous[Pathcount][Destination];
+            //Recursive the GetPath function to get all path
+            GetPath(Num_of_Node,Source,Node,ECMP);
+            Pathcount++;
+        }
+    }
 }
 
