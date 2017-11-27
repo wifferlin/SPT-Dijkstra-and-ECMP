@@ -136,9 +136,11 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
     }
     
     //Print The Result
+    printf("\n");
     char ECMP[]="";
     //Use the Depth-First Search and Recursive find the all path form Previous table and print
     GetPath(Num_of_Node, Source,Destination,ECMP);
+    printf("\nThe Distance = %d\n",Distance[Destination]);
 }
 
 

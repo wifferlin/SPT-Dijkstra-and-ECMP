@@ -122,8 +122,10 @@ void Dijkstra(int Source , int Destination , int Num_of_Node, int LinkMatrix[Num
         }
     }
     //Print The Result
+    printf("\n");
     char SPF[]="";
     GetPath(Num_of_Node,Source,Destination,Previous,SPF);
+    printf("\nThe Distance = %d\n",Distance[Destination]);
     
     /* count = Destination;
     printf("The Path : %d",Destination);
