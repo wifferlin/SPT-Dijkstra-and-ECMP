@@ -98,7 +98,6 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
         }
         //Record this Node as Visited
         Visited[RemoveNode] = 1;
-
         for(count=0 ;count<Num_of_Node; count++)
         {
             //Find the Node Neighbor
@@ -120,7 +119,6 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
                     //If Not Visited,Add into the Priority Queue
                     if(Visited[count] == 0)
                     {
-                        ////printf("ADD : %d , Distance = %d\n",count,Distance[count]);
                         NewNode.Node_Num = count;
                         NewNode.Distance = Distance[count];
                         Enqueue(NewNode,&Q);
@@ -130,6 +128,14 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
                 {
                     //Add the Previous into Previous table(same Distance means multipath)
                     AddPrevious(Num_of_Node,count,RemoveNode);
+
+                    //If Not Visited,Add into the Priority Queue
+                    if(Visited[count] == 0)
+                    {
+                        NewNode.Node_Num = count;
+                        NewNode.Distance = Distance[count];
+                        Enqueue(NewNode,&Q);
+                    }
                 }
             }
         }
