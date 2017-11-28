@@ -6,6 +6,7 @@
 #define Empty 999
 
 int Previous[36][36]; //Record the Shorted Path Previous Node
+int TotalPath_Num = 0;
 
 
 int main(int argc, char *argv[])
@@ -146,7 +147,7 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
     char ECMP[]="";
     //Use the Depth-First Search and Recursive find the all path form Previous table and print
     GetPath(Num_of_Node, Source,Destination,ECMP);
-    printf("\nThe Distance = %d\n",Distance[Destination]);
+    printf("\nThe Min Distance = %d , exisit %d Path\n",Distance[Destination],TotalPath_Num);
 }
 
 
@@ -188,6 +189,7 @@ void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
         strcat(str,ECMP);
         ECMP = str;
         printf("%s\n",ECMP);
+        TotalPath_Num++;
     }
     else
     {   
