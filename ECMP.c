@@ -5,7 +5,8 @@
 #define Infinity 9999
 #define Empty 999
 
-int Previous[36][36]; //Record the Shorted Path Previous Node
+int* Previous_Ptr;
+//int Previous[36][36]; //Record the Shorted Path Previous Node
 int TotalPath_Num = 0;
 
 
@@ -58,12 +59,14 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
 {
     int Distance[Num_of_Node];              //Record the Shorted Path from source
     int Visited[Num_of_Node];               //Aleardy Visisited Node(0 is unvisited, 1 is visited)
+    int Previous[Num_of_Node][Num_of_Node];
     int Pathcount,count;
     PQ Q;                                   // Priority Queue
     PQNode NewNode;                         //Priority Queue Node
     int RemoveNode;                         //pop Node from Priority Queue
     int Tmp;
 
+    Previous_Ptr = Previous;
     //initial the distance and shorted path from source
     for(count = 0;count < Num_of_Node; count++)
     {
@@ -154,27 +157,34 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
 void ResetPrevious(int Num_of_Node,int Node)
 {
     int Pathcount;
+    //find the Node column pointer on Previous Matrix
+    int *Reset_Node_Ptr = Previous_Ptr + Node;
     //Clear all old Distance Previous
     for(Pathcount = 0 ; Pathcount < Num_of_Node; Pathcount++)
     {
-        Previous[Pathcount][Node] = Empty;
+        *Reset_Node_Ptr = Empty;
+        //move pointer
+        Reset_Node_Ptr = Reset_Node_Ptr + 36;
     }
 }
 
-void AddPrevious(int Num_of_Node , int Node,int RemoveNode)
+void AddPrevious(int Num_of_Node,int Node,int RemoveNode)
 {
-    int Pathcount = 0;
+
+    //find the Node column pointer on Previous Matrix
+    int *Add_Node_Ptr = Previous_Ptr + Node;
     //find the empty box and save the new previous
-    while(Previous[Pathcount][Node] != Empty)
+    while(*Add_Node_Ptr != Empty)
     {
         // If find the smae Previous don't save again
-        if(Previous[Pathcount][Node] == RemoveNode)
+        if(*Add_Node_Ptr == RemoveNode)
         {
             break;
         }
-        Pathcount++;
+        //move pointer
+        Add_Node_Ptr = Add_Node_Ptr + 36;
     }
-    Previous[Pathcount][Node] = RemoveNode;
+    *Add_Node_Ptr = RemoveNode;
 }
 
 void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
@@ -182,6 +192,8 @@ void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
     int Pathcount = 0;
     int Node;
     char str[10];
+    //find the Node column pointer on Previous Matrix
+    int *Tmp_Ptr = Previous_Ptr + Destination;
     //If meet source means print the path
     if(Source == Destination)
     {
@@ -193,7 +205,7 @@ void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
     }
     else
     {   
-        while(Previous[Pathcount][Destination] != Empty)
+        while(*Tmp_Ptr != Empty)
         {
             if(Pathcount == 0)
             {
@@ -201,10 +213,12 @@ void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
                 strcat(str,ECMP);                 //Put the ECMP back on str and save as str
                 ECMP = str;
             }
-            Node = Previous[Pathcount][Destination];
+            Node = *Tmp_Ptr;
             //Recursive the GetPath function to get all path
             GetPath(Num_of_Node,Source,Node,ECMP);
             Pathcount++;
+            //move the pointer
+            Tmp_Ptr = Tmp_Ptr + 36;
         }
     }
 }
