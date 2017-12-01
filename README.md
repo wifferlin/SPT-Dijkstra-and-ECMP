@@ -15,4 +15,7 @@ Then you can get one Shortest Path and Distance.
 This file you can key in the source and Destination Node Number,  
 Then you can get all Equal cost Shortest Path and Distance.
 ## -ECMP_Link_Disjoint.c
-This is a prototype now to find the Link Disjoint path on ECMP.
+This is a prototype now to find the Link Disjoint path on ECMP.  
+
+### Feel Free to contact me if you find any wrong!!!
+### e-mail : wifferlin0505@gmail.com
