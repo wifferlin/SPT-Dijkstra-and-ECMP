@@ -5,8 +5,7 @@
 #define Infinity 9999
 #define Empty 999
 
-int* Previous_Ptr;
-//int Previous[36][36]; //Record the Shorted Path Previous Node
+int* Previous_Ptr;   //Record the Shorted Path Previous Node Matrix Pointer
 int TotalPath_Num = 0;
 
 
@@ -59,7 +58,7 @@ void Multi_Path_Dijkstra(int Source , int Destination , int Num_of_Node, int Lin
 {
     int Distance[Num_of_Node];              //Record the Shorted Path from source
     int Visited[Num_of_Node];               //Aleardy Visisited Node(0 is unvisited, 1 is visited)
-    int Previous[Num_of_Node][Num_of_Node];
+    int Previous[Num_of_Node][Num_of_Node]; //Record the Shorted Path Previous Node
     int Pathcount,count;
     PQ Q;                                   // Priority Queue
     PQNode NewNode;                         //Priority Queue Node
