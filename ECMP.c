@@ -163,7 +163,7 @@ void ResetPrevious(int Num_of_Node,int Node)
     {
         *Reset_Node_Ptr = Empty;
         //move pointer
-        Reset_Node_Ptr = Reset_Node_Ptr + 36;
+        Reset_Node_Ptr = Reset_Node_Ptr + Num_of_Node;
     }
 }
 
@@ -181,7 +181,7 @@ void AddPrevious(int Num_of_Node,int Node,int RemoveNode)
             break;
         }
         //move pointer
-        Add_Node_Ptr = Add_Node_Ptr + 36;
+        Add_Node_Ptr = Add_Node_Ptr + Num_of_Node;
     }
     *Add_Node_Ptr = RemoveNode;
 }
@@ -217,7 +217,7 @@ void GetPath(int Num_of_Node,int Source,int Destination,char ECMP[])
             GetPath(Num_of_Node,Source,Node,ECMP);
             Pathcount++;
             //move the pointer
-            Tmp_Ptr = Tmp_Ptr + 36;
+            Tmp_Ptr = Tmp_Ptr + Num_of_Node;
         }
     }
 }
